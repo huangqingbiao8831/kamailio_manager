@@ -1,0 +1,12 @@
+server:
+  port: "8083"
+
+kamailio:
+  # 注意：这里需要 Kamailio 开启 xhttp 模块并监听此端口
+  rpc_url: "http://10.24.65.83:8091/rpc"
+  timeout: 5
+
+supervisor:
+  # 格式: http://user:pass@IP:port/RPC2
+  url: "/run/supervisor/supervisor.sock"
+  process_name: "kamailio"

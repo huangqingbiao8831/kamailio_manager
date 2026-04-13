@@ -1,0 +1,18 @@
+一、目录说明
+kamailio-manager/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── api/                 
+│   ├── client/              
+│   ├── middleware/          # 新增：中间件层
+│   │   ├── logger.go        # 记录每个 HTTP 请求的日志
+│   │   ├── auth.go          # API 密钥或 Token 校验
+│   │   └── recovery.go      # 自定义异常恢复
+│   ├── config/              
+│   └── logger/              
+
+二、编译说明
+1、直接make build
+2、生产的可执行文件在dist目录中
