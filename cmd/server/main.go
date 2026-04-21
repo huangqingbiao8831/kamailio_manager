@@ -10,6 +10,35 @@ import (
 	"time"
 )
 
+// PollKamailioStatus 持续探测 Kamailio 状态直到成功
+func PollKamailioStatus(kClient *client.KamailioJSONClient) {
+	// 给 Kamailio 留出基础启动缓冲时间
+	time.Sleep(2 * time.Second)
+
+	logger.Log.Info("开始启动后自动探测 Kamailio 业务就绪状态...")
+
+	// 设置 3 秒一次的定时探测
+	ticker := time.NewTicker(3 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			// 调用之前定义的原生 HTTP 请求方法
+			res, err := kClient.InvokeNativeHTTP("/api/startSuccessful", map[string]string{
+				"action": "init_report",
+			})
+
+			if err == nil {
+				logger.Log.Info("Kamailio 业务接口调用成功!", zap.String("response", res))
+				return // 成功后退出循环，结束协程
+			}
+
+			logger.Log.Warn("Kamailio 尚未就绪或接口报错，准备重试", zap.Error(err))
+		}
+	}
+}
+
 func main() {
 	// 1. Initialize Log
 	logger.Init()
@@ -68,7 +97,7 @@ func main() {
 			service.POST("/permission/address-reload", api.HandlePermissionAdressReload(kClient))
 
 			service.POST("/tm/stats", api.HandleTmModStats(kClient))
-			
+
 			service.POST("/dialog/stats_active", api.HandleDlgStatsActive(kClient))
 		}
 		// 2. 系统级控制 (Supervisor XML-RPC)
@@ -107,5 +136,7 @@ func main() {
 	}
 
 	logger.Log.Info("管理服务启动", zap.String("port", conf.Server.Port))
+	//增加对kamailio启动状态检测，并触发kamailio通过rabbitmq发送消息到后端
+	go PollKamailioStatus(kClient)
 	r.Run(":" + conf.Server.Port)
 }
