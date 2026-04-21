@@ -8,6 +8,7 @@ import (
 	"kamailio-manager/internal/config"
 	"kamailio-manager/internal/logger"
 	"time"
+	"strings"
 )
 
 // PollKamailioStatus 持续探测 Kamailio 状态直到成功
@@ -29,7 +30,12 @@ func PollKamailioStatus(kClient *client.KamailioJSONClient) {
 				"action": "init_report",
 			})
 
-			if err == nil {
+			if err != nil {
+			 logger.Log.Warn("kamailio is not ready,hello world<===============")
+			 continue
+			}
+
+			if strings.Contains(res,"successful") {
 				logger.Log.Info("Kamailio 业务接口调用成功!", zap.String("response", res))
 				return // 成功后退出循环，结束协程
 			}
