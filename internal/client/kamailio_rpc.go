@@ -19,8 +19,20 @@ type KamailioJSONClient struct {
 func (k *KamailioJSONClient) Invoke(method string, params ...interface{}) (interface{}, error) {
 	client := resty.New().SetTimeout(k.Timeout)
 	var finalParams interface{} = params
-	if params == nil {
+	//if params == nil {
+	//	finalParams = []interface{}{}
+	//}
+	if len(params) == 1 {
+		switch v := params[0].(type) {
+		case map[string]interface{}, struct{}:
+			finalParams = v
+		default:
+			finalParams = params
+		}
+	} else if len(params) == 0 {
 		finalParams = []interface{}{}
+	} else {
+		finalParams = params
 	}
 
 	reqBody := map[string]interface{}{

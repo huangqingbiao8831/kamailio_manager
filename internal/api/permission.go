@@ -12,10 +12,10 @@ func HandlePermissionAdressReload(kClient *client.KamailioJSONClient) gin.Handle
 	return func(c *gin.Context) {
 		res, err := kClient.Invoke("permissions.addressReload")
 		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			logger.Log.Warn("Enter HandlePermissionAdressReload,get error:",zap.Error(err))
+			c.JSON(500, gin.H{"error": err.Error(), "code": 500})
+			logger.Log.Warn("Enter HandlePermissionAdressReload,get error:", zap.Error(err))
 			return
 		}
-		c.JSON(200, gin.H{"status": "success", "data": res})
+		c.JSON(200, gin.H{"msg": "操作成功", "data": res, "code": 200})
 	}
 }

@@ -19,6 +19,7 @@ func Init() {
 	})
 
 	encoderConfig := zap.NewDevelopmentEncoderConfig()
+	encoderConfig.FunctionKey = "FUNC"
 	// Using your specified format
 	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2026-01-02 15:04:05")
 	encoder := zapcore.NewConsoleEncoder(encoderConfig)

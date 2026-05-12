@@ -105,6 +105,9 @@ func main() {
 			service.POST("/tm/stats", api.HandleTmModStats(kClient))
 
 			service.POST("/dialog/stats_active", api.HandleDlgStatsActive(kClient))
+		        //增加htable和mtree的reload
+			service.POST("/htable/reload", api.HandleHtableReload(kClient))
+			service.POST("/mtree/reload", api.HandleMtreeReload(kClient))
 		}
 		// 2. 系统级控制 (Supervisor XML-RPC)
 		system := v1.Group("/system")

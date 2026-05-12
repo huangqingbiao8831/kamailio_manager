@@ -24,10 +24,10 @@ func HandleDialplanTranslate(kClient *client.KamailioJSONClient) gin.HandlerFunc
 
 		res, err := kClient.Invoke("dialplan.translate", req.DPID, req.SrcStr)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "code": 500})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"status": "success", "data": res})
+		c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "操作成功", "data": res})
 	}
 }
 
