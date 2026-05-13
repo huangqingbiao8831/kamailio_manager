@@ -7,8 +7,8 @@ import (
 	"kamailio-manager/internal/client"
 	"kamailio-manager/internal/config"
 	"kamailio-manager/internal/logger"
-	"time"
 	"strings"
+	"time"
 )
 
 // PollKamailioStatus 持续探测 Kamailio 状态直到成功
@@ -31,11 +31,11 @@ func PollKamailioStatus(kClient *client.KamailioJSONClient) {
 			})
 
 			if err != nil {
-			 logger.Log.Warn("kamailio is not ready,hello world<===============")
-			 continue
+				logger.Log.Warn("kamailio is not ready,hello world<===============")
+				continue
 			}
 
-			if strings.Contains(res,"successful") {
+			if strings.Contains(res, "successful") {
 				logger.Log.Info("Kamailio 业务接口调用成功!", zap.String("response", res))
 				return // 成功后退出循环，结束协程
 			}
@@ -105,9 +105,11 @@ func main() {
 			service.POST("/tm/stats", api.HandleTmModStats(kClient))
 
 			service.POST("/dialog/stats_active", api.HandleDlgStatsActive(kClient))
-		        //增加htable和mtree的reload
-			service.POST("/htable/reload", api.HandleHtableReload(kClient))
-			service.POST("/mtree/reload", api.HandleMtreeReload(kClient))
+			//增加htable和mtree的reload
+			//service.POST("/htable/reload", api.HandleHtableReload(kClient))
+			service.POST("/htable", api.HandleHtableCommonComand(kClient))
+			//service.POST("/mtree/reload", api.HandleMtreeReload(kClient))
+			service.POST("/mtree", api.HandleMtreeCommonCommand(kClient))
 		}
 		// 2. 系统级控制 (Supervisor XML-RPC)
 		system := v1.Group("/system")
